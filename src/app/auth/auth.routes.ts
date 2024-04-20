@@ -1,5 +1,4 @@
 import { Routes } from "@angular/router";
-import { RegisterComponent } from "./register/register.component";
 import { AuthComponent } from "./auth.component";
 
 export const routes: Routes = [
