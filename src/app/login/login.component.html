@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form [formGroup]="form">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4"></ion-col>
+        <ion-col class="text-center" size="4">
+          <h1>Enter Your Information</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4"></ion-col>
+        <ion-col class="text-center" size="4">
+          <mat-form-field class="example-full-width">
+            <input type="email" matInput placeholder="Username..." formControlName="userName" />
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4"></ion-col>
+        <ion-col class="text-center" size="4">
+          <mat-form-field appearance="fill">
+            <input matInput type="password" placeholder="Password..." formControlName="password" />
+          </mat-form-field>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4"></ion-col>
+        <ion-col class="text-center" size="3">
+          <button mat-stroked-button color="primary" (click)="submitUserLogin()">Submit</button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
