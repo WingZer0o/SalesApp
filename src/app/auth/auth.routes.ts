@@ -1,0 +1,25 @@
+import { Routes } from "@angular/router";
+import { RegisterComponent } from "./register/register.component";
+import { AuthComponent } from "./auth.component";
+
+export const routes: Routes = [
+    {
+        path: '',
+        component: AuthComponent,
+        children: [
+            {
+                path: '',
+                redirectTo: 'login',
+                pathMatch: 'full'
+            },
+            {
+                path: 'login',
+                loadComponent: () => import('./login/login.component').then((m) => m.LoginComponent)
+            },
+            {
+                path: 'register',
+                loadComponent: () => import('./register/register.component').then((m) => RegisterComponent)
+            }
+        ]
+    }
+];

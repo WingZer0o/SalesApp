@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { IonContent, IonToolbar, IonTitle, IonHeader, IonList, IonItem, IonInput, IonGrid, IonRow, IonCol, IonFooter } from "@ionic/angular/standalone";
-import { MaterialModule } from '../modules/material.module';
+import { MaterialModule } from '../../modules/material.module';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LoginHttpService } from '../services/http/login-http.service';
-import { LoginDto } from '../models/login/login-dto';
+import { LoginHttpService } from '../../services/http/login-http.service';
+import { LoginDto } from '../../models/login/login-dto';
 
 @Component({
   selector: 'app-login',
