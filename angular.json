@@ -31,8 +31,14 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": []
+            "styles": [
+              "src/global.scss", 
+              "src/theme/variables.scss",
+              "node_modules/primeflex/primeflex.css"
+            ],
+            "scripts": [
+              
+            ]
           },
           "configurations": {
             "production": {
