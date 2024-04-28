@@ -23,13 +23,13 @@ export class LoginComponent  implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      userName: ['', [Validators.required]],
-      password: ['', [Validators.required]]
+      email: ['mtmulch0191@outlook.com', [Validators.required]],
+      password: ['Esforces0191!@', [Validators.required]]
     });
   }
 
   public submitUserLogin(): void {
-    const postBody: LoginDto = new LoginDto(this.form.get('userName')?.value, this.form.get('password')?.value);
-    this.loginHttpService.login(postBody);
+    const postBody: LoginDto = new LoginDto(this.form.get('email')?.value, this.form.get('password')?.value);
+    this.loginHttpService.login(postBody)
   }
 }
