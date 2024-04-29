@@ -3,6 +3,7 @@ import { HttpClientService } from './http-client-service';
 import { environment } from 'src/environments/environment';
 import { LoginDto } from 'src/app/models/login/login-dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoginResponseDto } from 'src/app/models/login/login-response-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +14,14 @@ export class LoginHttpService  {
     
   }
 
-  public login(body: LoginDto) {
-    const url: string = environment.apiUrl + 'login';
-    return this.httpClientService.post(url, body).subscribe((response) => {
-      console.log(response);
-    }, (error: HttpErrorResponse) => {
-      console.log(error);
-    });
+  public login(body: LoginDto): Promise<LoginResponseDto> {
+    return new Promise((resolve, reject) => {
+      const url: string = environment.apiUrl + 'login';
+      this.httpClientService.post(url, body).subscribe((response: LoginResponseDto) => {
+        resolve(response);
+      }, (error: HttpErrorResponse) => {
+        reject(error);
+      });
+    })
   }
 }
