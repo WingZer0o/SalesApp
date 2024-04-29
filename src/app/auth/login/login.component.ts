@@ -22,6 +22,8 @@ import {
 } from "@angular/forms";
 import { LoginHttpService } from "../../services/http/login-http.service";
 import { LoginDto } from "../../models/login/login-dto";
+import { LoginResponseDto } from "src/app/models/login/login-response-dto";
+import { AuthGuardService } from "src/app/services/http/auth-guard.service";
 
 @Component({
   selector: "app-login",
@@ -46,10 +48,11 @@ import { LoginDto } from "../../models/login/login-dto";
 })
 export class LoginComponent implements OnInit {
   public form!: FormGroup;
-
+  public isLoading: boolean = false;
   constructor(
     private fb: FormBuilder,
     private loginHttpService: LoginHttpService,
+    private authGuardService: AuthGuardService,
   ) {}
 
   ngOnInit() {
@@ -61,12 +64,18 @@ export class LoginComponent implements OnInit {
 
   public async submitUserLogin(): Promise<void> {
     try {
+      this.isLoading = true;
       const postBody: LoginDto = new LoginDto(
         this.form.get("email")?.value,
         this.form.get("password")?.value,
       );
-      const response = await this.loginHttpService.login(postBody);
+      const response: LoginResponseDto = await this.loginHttpService.login(
+        postBody,
+      );
+      this.isLoading = false;
+      this.authGuardService.setToken(response.token);
     } catch (error: any) {
+      this.isLoading = false;
       console.log(error.error.errorMessage);
     }
   }

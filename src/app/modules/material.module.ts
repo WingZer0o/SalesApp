@@ -8,17 +8,19 @@ import {
 } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
-  imports: [
-
-  ],
+  imports: [],
   exports: [
     MatTableModule,
     MatStepperModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatCardModule
   ],
 })
 export class MaterialModule {}

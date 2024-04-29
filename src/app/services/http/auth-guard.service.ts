@@ -29,6 +29,10 @@ export class AuthGuardService {
     return result;
   }
 
+  public setToken(token: string): void {
+    localStorage.setItem("token", token);
+  }
+
   public removeToken(): void {
     localStorage.removeItem("token");
   }
