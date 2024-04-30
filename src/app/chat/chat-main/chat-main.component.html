@@ -5,15 +5,14 @@
 </ion-header>
 <ion-content>
   <div class="grid">
-    <div class="flex-row">
-      <div class="col-offset-5 col-2 flex align-items-center justify-content-center">
+      <div class="col-offset-4 col-4">
         <mat-card>
           <mat-card-content>
-            @for (chatMessage of chatMessages; track chatMessage){
+            @for (chatMessage of chatMessages; track chatMessage; let i = $index){
               <mat-list-item>
                 <mat-icon matListItemIcon>chat_bubble</mat-icon>
                 <div matListItemTitle>{{chatMessage.sender}} | {{chatMessage.timestamp | chatTimestamp}}</div>
-                <div matListItemLine>{{chatMessage.message}}</div>
+                <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage.message, i)}}</div>
               </mat-list-item>
             }
           </mat-card-content>
@@ -23,6 +22,5 @@
           </mat-card-actions>
         </mat-card>
       </div>
-    </div>
   </div>
 </ion-content>
