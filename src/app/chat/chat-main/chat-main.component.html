@@ -12,13 +12,16 @@
               <mat-list-item>
                 <mat-icon matListItemIcon>chat_bubble</mat-icon>
                 <div matListItemTitle>{{chatMessage.sender}} | {{chatMessage.timestamp | chatTimestamp}}</div>
-                <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage.message, i)}}</div>
+                <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
               </mat-list-item>
+              <mat-divider></mat-divider>
             }
           </mat-card-content>
           <mat-card-actions>
-            <input matInput />
-            <button mat-stroked-button>Send</button>
+            <form [formGroup]="inputForm">
+              <input matInput formControlName="input" />
+              <button mat-stroked-button (click)="handleInputSend()">Send</button>
+            </form>
           </mat-card-actions>
         </mat-card>
       </div>

@@ -83,6 +83,7 @@ export class LoginComponent implements OnInit {
       );
       this.isLoading = false;
       this.authGuardService.setToken(response.token);
+      this.router.navigateByUrl("/chat/main");
     } catch (error: any) {
       this.isLoading = false;
       console.log(error.error.errorMessage);
