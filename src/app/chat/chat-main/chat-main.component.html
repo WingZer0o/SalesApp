@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="grid">
+    <div class="flex-row">
+      <div class="col-offset-5 col-2 flex align-items-center justify-content-center">
+        <mat-card>
+          <mat-card-content>
+            @for (chatMessage of chatMessages; track chatMessage){
+              <mat-list-item>
+                <mat-icon matListItemIcon>chat_bubble</mat-icon>
+                <div matListItemTitle>{{chatMessage.sender}} | {{chatMessage.timestamp | chatTimestamp}}</div>
+                <div matListItemLine>{{chatMessage.message}}</div>
+              </mat-list-item>
+            }
+          </mat-card-content>
+          <mat-card-actions>
+            <input matInput />
+            <button mat-stroked-button>Send</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</ion-content>

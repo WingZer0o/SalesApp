@@ -24,6 +24,8 @@ import { LoginHttpService } from "../../services/http/login-http.service";
 import { LoginDto } from "../../models/login/login-dto";
 import { LoginResponseDto } from "src/app/models/login/login-response-dto";
 import { AuthGuardService } from "src/app/services/http/auth-guard.service";
+import { Router } from "@angular/router";
+import { setThrowInvalidWriteToSignalError } from "@angular/core/primitives/signals";
 
 @Component({
   selector: "app-login",
@@ -49,13 +51,20 @@ import { AuthGuardService } from "src/app/services/http/auth-guard.service";
 export class LoginComponent implements OnInit {
   public form!: FormGroup;
   public isLoading: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private loginHttpService: LoginHttpService,
     private authGuardService: AuthGuardService,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    // check if token exists in local storage. If it does, navigate to chat screen
+    if (this.authGuardService.isTokenPresent()) {
+      this.router.navigateByUrl("/chat");
+    }
+    
     this.form = this.fb.group({
       email: ["mtmulch0191@outlook.com", [Validators.required]],
       password: ["Esforces0191!@", [Validators.required]],

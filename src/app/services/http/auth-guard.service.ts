@@ -16,7 +16,7 @@ export class AuthGuardService {
     if (token !== null) {
       return true;
     }
-    this.router.navigate(["/home"]);
+    this.router.navigate(["/auth/login"]);
     return false;
   }
 
@@ -52,6 +52,6 @@ export class AuthGuardService {
 
   public unauthorizedLogout(): void {
     this.removeToken();
-    this.router.navigate(["/login"]);
+    this.router.navigate(["/auth/login"]);
   }
 }
