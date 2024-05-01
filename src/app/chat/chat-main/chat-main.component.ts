@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, QueryList, Type, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonTitle, IonToolbar, IonHeader, IonContent } from "@ionic/angular/standalone";
 import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
@@ -19,6 +19,9 @@ import { Typewriter } from 'src/app/shared/typewriter/typewriter';
   imports: [IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule, CommonModule]
 })
 export class ChatMainComponent  implements OnInit {
+  @ViewChild('chatHistory', {static: false})
+  chatHistory!: ElementRef;
+
   @ViewChildren('chatMessage')
   uiChatMessages!: QueryList<ElementRef>;
 
@@ -53,7 +56,7 @@ export class ChatMainComponent  implements OnInit {
       if (elementRef?.getAttribute('isChatTyped') === "false") {
         elementRef.setAttribute('isChatTyped', true);
         if (chatMessage.isChatBot) {
-          const typeWriter = new Typewriter(elementRef, { loop: false, typingSpeed: 25, deletingSpeed: 50 });
+          const typeWriter = new Typewriter(elementRef, { loop: false, typingSpeed: 25, deletingSpeed: 50, parentScroll: this.chatHistory.nativeElement });
           typeWriter.typeString(chatMessage.message).start();
         } else {
           elementRef.append(chatMessage.message);
@@ -71,6 +74,7 @@ export class ChatMainComponent  implements OnInit {
         const requestDto = new ChatMessageRequestDto(message, this.currentChatChannel.channelId);
         const response: ChatMessageResponseDto = await this.chatHttpService.simpleChatMessage(requestDto);
         this.chatMessages.push(new ChatMessage(1, response.message, "", "Chat Bot", new Date(), true));
+        this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
       }
     } catch (error: any) {
       console.error(error);
