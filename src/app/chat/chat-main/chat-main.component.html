@@ -4,32 +4,44 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="grid">
-    <div class="col-offset-4 col-4">
-      <mat-card>
-        <mat-card-content>
-          @for (chatMessage of chatMessages; track chatMessage; let i = $index){
-          <mat-list-item>
-            <mat-icon matListItemIcon>chat_bubble</mat-icon>
-            <div matListItemTitle>
-              @if (chatMessage.sender) {
-              <b>{{chatMessage.sender}} | {{chatMessage.timestamp | chatTimestamp}}</b>
-              } @else {
-              <div>{{chatMessage.timestamp | chatTimestamp}}</div>
-              }
-            </div>
-            <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          }
-        </mat-card-content>
-        <mat-card-actions>
-          <form [formGroup]="inputForm">
-            <input matInput formControlName="input" />
-            <button mat-stroked-button (click)="handleInputSend()">Send</button>
-          </form>
-        </mat-card-actions>
-      </mat-card>
+  @if (isLoading) {
+    <div class="grid">
+      <div class="col-offset-4 col-4">
+        <mat-card>
+          <mat-card-content>
+            <mat-spinner></mat-spinner>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
-  </div>
+  } @else {
+    <div class="grid">
+      <div class="col-offset-4 col-4">
+        <mat-card>
+          <mat-card-content>
+            @for (chatMessage of chatMessages; track chatMessage; let i = $index){
+            <mat-list-item>
+              <mat-icon matListItemIcon>chat_bubble</mat-icon>
+              <div matListItemTitle>
+                @if (chatMessage.sender) {
+                <b>{{chatMessage.sender}} | {{chatMessage.timestamp | chatTimestamp}}</b>
+                } @else {
+                <div>{{chatMessage.timestamp | chatTimestamp}}</div>
+                }
+              </div>
+              <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            }
+          </mat-card-content>
+          <mat-card-actions>
+            <form [formGroup]="inputForm">
+              <input matInput formControlName="input" />
+              <button mat-stroked-button (click)="handleInputSend()">Send</button>
+            </form>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  }
 </ion-content>

@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, QueryList, Type, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonTitle, IonToolbar, IonHeader, IonContent } from "@ionic/angular/standalone";
+import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
 import { ChatMessage } from 'src/app/models/chat-main/chat-message';
 import { ChatMessageRequestDto } from 'src/app/models/chat-main/chat-message-request-dto';
+import { ChatMessageResponseDto } from 'src/app/models/chat-main/chat-message-response-dto';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { SharedModule } from 'src/app/modules/shared.module';
 import { ChatHttpService } from 'src/app/services/http/chat-http.service';
@@ -20,7 +22,9 @@ export class ChatMainComponent  implements OnInit {
   @ViewChildren('chatMessage')
   uiChatMessages!: QueryList<ElementRef>;
 
+  public isLoading: boolean = true;
   public chatMessages: ChatMessage[] = [];
+  public currentChatChannel!: ChatChannelResponseDto;
 
   public inputForm!: FormGroup;
 
@@ -29,10 +33,17 @@ export class ChatMainComponent  implements OnInit {
     private chatHttpService: ChatHttpService
   ) { }
 
-  ngOnInit() {
-    this.inputForm = this.formBuilder.group({
-      input: ['', Validators.required]
-    });
+  async ngOnInit() {
+    try {
+      const response: ChatChannelResponseDto = await this.chatHttpService.getChatChannel();
+      this.currentChatChannel = response;
+      this.isLoading = false;
+      this.inputForm = this.formBuilder.group({
+        input: ['', Validators.required]
+      });
+    } catch (error) {
+
+     }
   }
 
 
@@ -57,11 +68,12 @@ export class ChatMainComponent  implements OnInit {
         const message = this.inputForm.get('input')?.value;
         this.chatMessages.push(new ChatMessage(1, message, "", "John Doe", new Date(), false));
         this.inputForm.reset();
-        const requestDto = new ChatMessageRequestDto(message);
-        const response = await this.chatHttpService.simpleChatMessage(requestDto);
+        const requestDto = new ChatMessageRequestDto(message, this.currentChatChannel.channelId);
+        const response: ChatMessageResponseDto = await this.chatHttpService.simpleChatMessage(requestDto);
+        this.chatMessages.push(new ChatMessage(1, response.message, "", "Chat Bot", new Date(), true));
       }
     } catch (error: any) {
-      console.error(error.error.errorMessage);
+      console.error(error);
     }
   }
 }
