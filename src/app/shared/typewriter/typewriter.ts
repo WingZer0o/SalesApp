@@ -24,7 +24,11 @@ export class Typewriter {
         const interval = setInterval(() => {
           this.element.append(string[i]);
           i++;
-          if (i >= string.length) {
+          if (i >= 255) {
+            this.element.append(string.slice(i))
+            clearInterval(interval);
+            resolve();
+          } else if (i >= string.length) {
             clearInterval(interval);
             resolve();
           }
