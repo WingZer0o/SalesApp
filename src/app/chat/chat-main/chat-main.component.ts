@@ -3,8 +3,10 @@ import { Component, ElementRef, OnInit, QueryList, Type, ViewChildren } from '@a
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonTitle, IonToolbar, IonHeader, IonContent } from "@ionic/angular/standalone";
 import { ChatMessage } from 'src/app/models/chat-main/chat-message';
+import { ChatMessageRequestDto } from 'src/app/models/chat-main/chat-message-request-dto';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { SharedModule } from 'src/app/modules/shared.module';
+import { ChatHttpService } from 'src/app/services/http/chat-http.service';
 import { Typewriter } from 'src/app/shared/typewriter/typewriter';
 
 @Component({
@@ -23,7 +25,8 @@ export class ChatMainComponent  implements OnInit {
   public inputForm!: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private chatHttpService: ChatHttpService
   ) { }
 
   ngOnInit() {
@@ -48,11 +51,17 @@ export class ChatMainComponent  implements OnInit {
     }
   }
 
-  public handleInputSend(): void {
-    if (this.inputForm.valid) {
-      const message = this.inputForm.get('input')?.value;
-      this.chatMessages.push(new ChatMessage(1, message, "Mike Mulchrone", "John Doe", new Date(), false));
-      this.inputForm.reset();
+  public async handleInputSend(): Promise<void> {
+    try {
+      if (this.inputForm.valid) {
+        const message = this.inputForm.get('input')?.value;
+        this.chatMessages.push(new ChatMessage(1, message, "", "John Doe", new Date(), false));
+        this.inputForm.reset();
+        const requestDto = new ChatMessageRequestDto(message);
+        const response = await this.chatHttpService.simpleChatMessage(requestDto);
+      }
+    } catch (error: any) {
+      console.error(error.error.errorMessage);
     }
   }
 }
