@@ -8,7 +8,6 @@
     <div class="grid">
       <div class="col-offset-4 col-4 flex flex-wrap justify-content-center">
         <mat-spinner></mat-spinner>
-
       </div>
     </div>
   } @else {
@@ -20,10 +19,10 @@
             <mat-list-item>
               <mat-icon matListItemIcon>chat_bubble</mat-icon>
               <div matListItemTitle>
-                @if (chatMessage.sender) {
-                <b>{{chatMessage.sender}} | {{chatMessage.timestamp | chatTimestamp}}</b>
+                @if(chatMessage.isChatBot) {
+                  <div>Chat Bot | {{chatMessage.timestamp | chatTimestamp}}</div>
                 } @else {
-                <div>{{chatMessage.timestamp | chatTimestamp}}</div>
+                  <div>{{chatMessage.timestamp | chatTimestamp}}</div>
                 }
               </div>
               <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>

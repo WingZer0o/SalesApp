@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClientService } from './http-client-service';
 import { environment } from 'src/environments/environment';
-import { ChatMessageRequestDto } from 'src/app/models/chat-main/chat-message-request-dto';
 import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
-import { ChatMessageResponseDto } from 'src/app/models/chat-main/chat-message-response-dto';
+import { ChatMessage } from 'src/app/models/chat-main/chat-message';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +22,7 @@ export class ChatHttpService {
     });
   }
 
-  public simpleChatMessage(body: ChatMessageRequestDto): Promise<ChatMessageResponseDto> {
+  public simpleChatMessage(body: ChatMessage): Promise<ChatMessage> {
     return new Promise((resolve, reject) => {
       const url = environment.apiUrl + 'simple-chat';
       this.httpClient.post(url, body).subscribe((response) => {

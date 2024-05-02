@@ -1,17 +1,17 @@
 export class ChatMessage {
-    id: number;
+    id: string;
     message: string;
-    sender: string;
-    receiver: string;
     timestamp: Date;
     isChatBot: boolean;
+    chatChannelId: number;
+    userId: string;
   
-    constructor(id: number, message: string, sender: string, receiver: string, timestamp: Date, isChatBot: boolean = false) {
+    constructor(id: string, message: string, timestamp: Date, isChatBot: boolean, chatChannelId: number, userId: string) {
       this.id = id;
       this.message = message;
-      this.sender = sender;
-      this.receiver = receiver;
       this.timestamp = timestamp;
       this.isChatBot = isChatBot;
+      this.chatChannelId = chatChannelId;
+      this.userId = userId;
     }
 }

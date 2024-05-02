@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { AuthGuardService } from 'src/app/services/http/auth-guard.service';
+import { catchError } from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -17,7 +18,12 @@ export class AuthInterceptor implements HttpInterceptor {
           headers: req.headers.set('Authorization', authToken)
         });
         // send cloned request with header to the next handler.
-        return next.handle(authReq);
+        return next.handle(authReq).pipe(catchError((error) => {
+          if (error.status === 401) {
+            this.authGuardService.unauthorizedLogout();
+          }
+          throw error;
+        }));
     } else {
         return next.handle(req);
     }

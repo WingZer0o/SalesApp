@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonTitle, IonToolbar, IonHeader, IonContent } from "@ionic/angular/standalone";
 import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
 import { ChatMessage } from 'src/app/models/chat-main/chat-message';
-import { ChatMessageRequestDto } from 'src/app/models/chat-main/chat-message-request-dto';
-import { ChatMessageResponseDto } from 'src/app/models/chat-main/chat-message-response-dto';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { SharedModule } from 'src/app/modules/shared.module';
+import { AuthGuardService } from 'src/app/services/http/auth-guard.service';
 import { ChatHttpService } from 'src/app/services/http/chat-http.service';
 import { Typewriter } from 'src/app/shared/typewriter/typewriter';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-chat-main',
@@ -27,23 +27,33 @@ export class ChatMainComponent  implements OnInit {
 
   public isLoading: boolean = true;
   public chatMessages: ChatMessage[] = [];
-  public currentChatChannel!: ChatChannelResponseDto;
+  public currentChatChannelId!: number;
+  public currentUserId!: string;
 
   public inputForm!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
-    private chatHttpService: ChatHttpService
+    private chatHttpService: ChatHttpService,
+    private authGuardService: AuthGuardService
   ) { }
 
   async ngOnInit() {
     try {
+      this.currentUserId = this.authGuardService.getDecodedToken()?.userId;
       const response: ChatChannelResponseDto = await this.chatHttpService.getChatChannel();
-      this.currentChatChannel = response;
+      this.currentChatChannelId = response.channelId;
+      response.chatMessages.forEach((chatMessage, index) => {
+        chatMessage.isChatBot = false;
+      });
+      this.chatMessages.push(...response.chatMessages);
       this.isLoading = false;
       this.inputForm = this.formBuilder.group({
         input: ['', Validators.required]
       });
+      setTimeout(() => {
+        this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+      }, 100);
     } catch (error) {
 
      }
@@ -69,12 +79,14 @@ export class ChatMainComponent  implements OnInit {
     try {
       if (this.inputForm.valid) {
         const message = this.inputForm.get('input')?.value;
-        this.chatMessages.push(new ChatMessage(1, message, "", "John Doe", new Date(), false));
+        const newChatMessage = new ChatMessage(uuidv4(), message, new Date(), false, this.currentChatChannelId, this.currentUserId);
+        this.chatMessages.push(newChatMessage);
+        setTimeout(() => {
+          this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+        }, 100);
         this.inputForm.reset();
-        const requestDto = new ChatMessageRequestDto(message, this.currentChatChannel.channelId);
-        const response: ChatMessageResponseDto = await this.chatHttpService.simpleChatMessage(requestDto);
-        this.chatMessages.push(new ChatMessage(1, response.message, "", "Chat Bot", new Date(), true));
-        this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+        const response: ChatMessage = await this.chatHttpService.simpleChatMessage(newChatMessage);
+        this.chatMessages.push(response);
       }
     } catch (error: any) {
       console.error(error);
