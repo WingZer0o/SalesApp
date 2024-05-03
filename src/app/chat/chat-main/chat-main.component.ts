@@ -12,6 +12,8 @@ import { AuthGuardService } from 'src/app/services/http/auth-guard.service';
 import { ChatHttpService } from 'src/app/services/http/chat-http.service';
 import { Typewriter } from 'src/app/shared/typewriter/typewriter';
 import { v4 as uuidv4 } from 'uuid';
+import { AddChatChannelComponent } from '../add-chat-channel/add-chat-channel.component';
+import { MatRadioChange } from '@angular/material/radio';
 
 @Component({
   selector: 'app-chat-main',
@@ -64,8 +66,23 @@ export class ChatMainComponent  implements OnInit {
   }
 
   public addChatChannel(): void {
-    console.log('test');
-    // TODO: Implement addChatChannel
+    const dialog = this.dialog.open(AddChatChannelComponent);
+    dialog.componentInstance.addChatChannelEvent.subscribe((channelName: string) => {
+      this.chatHttpService.addChatChannel(channelName).then((response: ChatChannelDto) => {
+        debugger;
+        this.chatChannels.push(response);
+      });
+    });
+  }
+
+  public handleChatChannelChanged(event: MatRadioChange): void {
+    this.chatHttpService.getChatChannel(event.value).then((response: ChatChannelResponseDto) => {
+      this.currentChatChannelId = response.channelId;
+      this.chatMessages = response.chatMessages;
+      setTimeout(() => {
+        this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+      }, 100);
+    });
   }
 
 

@@ -18,7 +18,7 @@
             <b>Chat Channels</b><mat-icon class="cursor-pointer" (click)="addChatChannel()">add</mat-icon>
         </div>
       </div>
-      <mat-radio-group>
+      <mat-radio-group (change)="handleChatChannelChanged($event)">
         @for (chatChannel of chatChannels; track chatChannel; let i = $index) {
         @if (i === 0) {
         <mat-radio-button [value]="chatChannel.id" [checked]="true">{{chatChannel.chatChannelName}}</mat-radio-button>
