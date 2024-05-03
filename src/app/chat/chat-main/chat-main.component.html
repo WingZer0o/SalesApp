@@ -5,39 +5,64 @@
 </ion-header>
 <ion-content>
   @if (isLoading) {
-    <div class="grid">
-      <div class="col-offset-4 col-4 flex flex-wrap justify-content-center">
-        <mat-spinner></mat-spinner>
-      </div>
+  <div class="grid">
+    <div class="col-offset-4 col-4 flex flex-wrap justify-content-center">
+      <mat-spinner></mat-spinner>
     </div>
+  </div>
   } @else {
-    <div class="grid">
-      <div class="col-offset-4 col-4">
-        <mat-card>
-          <mat-card-content id="chat-history" #chatHistory>
-            @for (chatMessage of chatMessages; track chatMessage; let i = $index){
-            <mat-list-item>
-              <mat-icon matListItemIcon>chat_bubble</mat-icon>
-              <div matListItemTitle>
-                @if(chatMessage.isChatBot) {
-                  <div>Chat Bot | {{chatMessage.timestamp | chatTimestamp}}</div>
-                } @else {
-                  <div>{{chatMessage.timestamp | chatTimestamp}}</div>
-                }
-              </div>
-              <div matListItemLine [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-            }
-          </mat-card-content>
-          <mat-card-actions>
-            <form [formGroup]="inputForm">
-              <input matInput formControlName="input" />
-              <button mat-stroked-button (click)="handleInputSend()">Send</button>
-            </form>
-          </mat-card-actions>
-        </mat-card>
+  <div class="grid">
+    <div class="col-2">
+      <div class="flex-row">
+        <div class="col flex flex-wrap justify-content-center">
+            <b>Chat Channels</b><mat-icon class="cursor-pointer" (click)="addChatChannel()">add</mat-icon>
+        </div>
       </div>
+      <mat-radio-group>
+        @for (chatChannel of chatChannels; track chatChannel; let i = $index) {
+        @if (i === 0) {
+        <mat-radio-button [value]="chatChannel.id" [checked]="true">{{chatChannel.chatChannelName}}</mat-radio-button>
+        } @else {
+        <mat-radio-button [value]="chatChannel.id" [checked]="false">{{chatChannel.chatChannelName}}</mat-radio-button>
+        }
+        <br />
+        @if (i !== chatChannels.length - 1) {
+        <mat-divider></mat-divider>
+        }
+        }
+      </mat-radio-group>
     </div>
+    <div class="col-offset-2 col-4">
+      <mat-card>
+        <mat-card-content id="chat-history" #chatHistory>
+          @for (chatMessage of chatMessages; track chatMessage; let i = $index){
+          <div class="flex-row">
+            <mat-icon>chat_bubble</mat-icon>
+            <div>
+              @if(chatMessage.isChatBot) {
+              <b>Chat Bot</b>
+              }
+            </div>
+            <div [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
+            <mat-divider></mat-divider>
+          </div>
+          }
+        </mat-card-content>
+        <mat-card-actions class="flex flex-wrap align-items-center justify-content-center">
+          <div class="flex-row w-full">
+            <div class="col w-full">
+              <form [formGroup]="inputForm" class="w-full">
+                <mat-form-field class="w-full">
+                  <textarea matInput id="textarea-chat" class="w-full" formControlName="input"
+                    (keydown.enter)="handleInputSend()"></textarea>
+                </mat-form-field>
+                <button mat-stroked-button (click)="handleInputSend()">Send</button>
+              </form>
+            </div>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
   }
 </ion-content>

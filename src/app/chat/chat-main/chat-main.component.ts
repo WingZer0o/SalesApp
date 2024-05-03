@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { IonTitle, IonToolbar, IonHeader, IonContent } from "@ionic/angular/standalone";
+import { ChatChannelDto, ChatChannelListDto } from 'src/app/models/chat-main/chat-channel-list-dto';
 import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
 import { ChatMessageDto } from 'src/app/models/chat-main/chat-message-dto';
 import { MaterialModule } from 'src/app/modules/material.module';
@@ -16,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './chat-main.component.html',
   styleUrls: ['./chat-main.component.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule, CommonModule]
+  imports: [IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule]
 })
 export class ChatMainComponent  implements OnInit {
   @ViewChild('chatHistory', {static: false})
@@ -26,24 +28,29 @@ export class ChatMainComponent  implements OnInit {
   uiChatMessages!: QueryList<ElementRef>;
 
   public isLoading: boolean = true;
+  public chatChannels: ChatChannelDto[] = [];
   public chatMessages: ChatMessageDto[] = [];
   public currentChatChannelId!: number;
   public currentUserId!: string;
+  public selectedChannelId!: string;
 
   public inputForm!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private chatHttpService: ChatHttpService,
-    private authGuardService: AuthGuardService
+    private authGuardService: AuthGuardService,
+    private dialog: MatDialog
   ) { }
 
   async ngOnInit() {
     try {
       this.currentUserId = this.authGuardService.getDecodedToken()?.userId;
-      const response: ChatChannelResponseDto = await this.chatHttpService.getChatChannel();
-      this.currentChatChannelId = response.channelId;
-      this.chatMessages.push(...response.chatMessages);
+      const chatChannelListResponse: ChatChannelListDto = await this.chatHttpService.getChatChannelList();
+      this.chatChannels.push(...chatChannelListResponse.chatChannels);
+      const chatChannelResponse: ChatChannelResponseDto = await this.chatHttpService.getChatChannel(chatChannelListResponse.chatChannels[0].id);
+      this.currentChatChannelId = chatChannelResponse.channelId;
+      this.chatMessages.push(...chatChannelResponse.chatMessages);
       this.isLoading = false;
       this.inputForm = this.formBuilder.group({
         input: ['', Validators.required]
@@ -54,6 +61,11 @@ export class ChatMainComponent  implements OnInit {
     } catch (error) {
 
      }
+  }
+
+  public addChatChannel(): void {
+    console.log('test');
+    // TODO: Implement addChatChannel
   }
 
 

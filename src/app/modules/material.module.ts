@@ -13,6 +13,8 @@ import { MatCardModule } from "@angular/material/card";
 import { MatListModule } from "@angular/material/list";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatDialogModule } from "@angular/material/dialog";
 
 @NgModule({
   imports: [],
@@ -27,6 +29,8 @@ import { MatIconModule } from "@angular/material/icon";
     MatListModule,
     MatDividerModule,
     MatIconModule,
+    MatRadioModule,
+    MatDialogModule,
   ],
 })
 export class MaterialModule {}
