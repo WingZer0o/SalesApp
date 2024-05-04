@@ -15,6 +15,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatDialogModule } from "@angular/material/dialog";
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   imports: [],
@@ -31,6 +32,7 @@ import { MatDialogModule } from "@angular/material/dialog";
     MatIconModule,
     MatRadioModule,
     MatDialogModule,
+    MatSidenavModule
   ],
 })
 export class MaterialModule {}

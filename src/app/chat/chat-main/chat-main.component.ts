@@ -1,8 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, QueryList, Type, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IonTitle, IonToolbar, IonHeader, IonContent } from "@ionic/angular/standalone";
+import { IonTitle, IonToolbar, IonHeader, IonContent, IonFooter } from "@ionic/angular/standalone";
 import { ChatChannelDto, ChatChannelListDto } from 'src/app/models/chat-main/chat-channel-list-dto';
 import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
 import { ChatMessageDto } from 'src/app/models/chat-main/chat-message-dto';
@@ -14,15 +13,24 @@ import { Typewriter } from 'src/app/shared/typewriter/typewriter';
 import { v4 as uuidv4 } from 'uuid';
 import { AddChatChannelComponent } from '../add-chat-channel/add-chat-channel.component';
 import { MatRadioChange } from '@angular/material/radio';
+import { MatDrawer } from '@angular/material/sidenav';
+import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-chat-main',
   templateUrl: './chat-main.component.html',
   styleUrls: ['./chat-main.component.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule]
+  imports: [IonFooter, IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule]
 })
-export class ChatMainComponent  implements OnInit {
+export class ChatMainComponent implements OnInit, OnDestroy {
+  @ViewChild('content')
+  content!: IonContent;
+  
+  @ViewChild('drawer')
+  drawer!: MatDrawer;
+
   @ViewChild('chatHistory', {static: false})
   chatHistory!: ElementRef;
 
@@ -36,7 +44,7 @@ export class ChatMainComponent  implements OnInit {
   public currentUserId!: string;
   public selectedChannelId!: string;
 
-  public inputForm!: FormGroup;
+  private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,6 +52,11 @@ export class ChatMainComponent  implements OnInit {
     private authGuardService: AuthGuardService,
     private dialog: MatDialog
   ) { }
+
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+  }
 
   async ngOnInit() {
     try {
@@ -54,22 +67,22 @@ export class ChatMainComponent  implements OnInit {
       this.currentChatChannelId = chatChannelResponse.channelId;
       this.chatMessages.push(...chatChannelResponse.chatMessages);
       this.isLoading = false;
-      this.inputForm = this.formBuilder.group({
-        input: ['', Validators.required]
-      });
       setTimeout(() => {
-        this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+        this.content.scrollToBottom(300);
       }, 100);
     } catch (error) {
 
      }
   }
 
+  public openDrawer(): void {
+    this.drawer.toggle();
+  }
+
   public addChatChannel(): void {
     const dialog = this.dialog.open(AddChatChannelComponent);
     dialog.componentInstance.addChatChannelEvent.subscribe((channelName: string) => {
       this.chatHttpService.addChatChannel(channelName).then((response: ChatChannelDto) => {
-        debugger;
         this.chatChannels.push(response);
       });
     });
@@ -79,9 +92,6 @@ export class ChatMainComponent  implements OnInit {
     this.chatHttpService.getChatChannel(event.value).then((response: ChatChannelResponseDto) => {
       this.currentChatChannelId = response.channelId;
       this.chatMessages = response.chatMessages;
-      setTimeout(() => {
-        this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
-      }, 100);
     });
   }
 
@@ -92,8 +102,13 @@ export class ChatMainComponent  implements OnInit {
       if (elementRef?.getAttribute('isChatTyped') === "false") {
         elementRef.setAttribute('isChatTyped', true);
         if (chatMessage.isChatBot && !chatMessage.isFirstMessage) {
-          const typeWriter = new Typewriter(elementRef, { loop: false, typingSpeed: 25, deletingSpeed: 50, parentScroll: this.chatHistory.nativeElement });
-          typeWriter.typeString(chatMessage.message).start();
+          const typeWriter = new Typewriter(elementRef, { loop: false, typingSpeed: 25, deletingSpeed: 50});
+          typeWriter.scrollNotificationSubject.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+            this.content.scrollToBottom(300);
+          });
+          typeWriter.typeString(chatMessage.message).start().then(() => {
+            this.content.scrollToBottom(300);
+          });
         } else {
           elementRef.append(chatMessage.message);
         }
@@ -101,19 +116,18 @@ export class ChatMainComponent  implements OnInit {
     }
   }
 
-  public async handleInputSend(): Promise<void> {
+  public async handleInputSend(message: string): Promise<void> {
     try {
-      if (this.inputForm.valid) {
-        const message = this.inputForm.get('input')?.value;
         const newChatMessage = new ChatMessageDto(uuidv4(), message, new Date(), false, this.currentChatChannelId, this.currentUserId, false);
         this.chatMessages.push(newChatMessage);
         setTimeout(() => {
-          this.chatHistory.nativeElement.scrollTop = this.chatHistory.nativeElement.scrollHeight;
+          this.content.scrollToBottom(300);
         }, 100);
-        this.inputForm.reset();
         const response: ChatMessageDto = await this.chatHttpService.simpleChatMessage(newChatMessage);
         this.chatMessages.push(response);
-      }
+        setTimeout(() => {
+          this.content.scrollToBottom(300);
+        }, 100)
     } catch (error: any) {
       console.error(error);
     }

@@ -1,3 +1,16 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-content [fullscreen]="true">
+    <ion-router-outlet></ion-router-outlet>
+  </ion-content>
+  <ion-footer>
+    <ion-toolbar>
+      <form [formGroup]="inputForm" class="w-full">
+        <mat-form-field class="w-full">
+          <textarea matInput id="textarea-chat" class="w-full" formControlName="input"
+            (keydown.enter)="handleInputSend()"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" (click)="handleInputSend()">Send</button>
+      </form>
+    </ion-toolbar>
+  </ion-footer>
 </ion-app>

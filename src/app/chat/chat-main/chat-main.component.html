@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Chat</ion-title>
+    <ion-title><mat-icon (click)="openDrawer()">menu</mat-icon></ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content [fullscreen]="true" #content>
   @if (isLoading) {
   <div class="grid">
     <div class="col-offset-4 col-4 flex flex-wrap justify-content-center">
@@ -12,57 +12,49 @@
   </div>
   } @else {
   <div class="grid">
-    <div class="col-2">
-      <div class="flex-row">
-        <div class="col flex flex-wrap justify-content-center">
+    <mat-drawer-container class="example-container">
+      <mat-drawer #drawer>
+        <div class="flex-row">
+          <div class="flex flex-wrap justify-content-center">
             <b>Chat Channels</b><mat-icon class="cursor-pointer" (click)="addChatChannel()">add</mat-icon>
+          </div>
         </div>
-      </div>
-      <mat-radio-group (change)="handleChatChannelChanged($event)">
-        @for (chatChannel of chatChannels; track chatChannel; let i = $index) {
-        @if (i === 0) {
-        <mat-radio-button [value]="chatChannel.id" [checked]="true">{{chatChannel.chatChannelName}}</mat-radio-button>
-        } @else {
-        <mat-radio-button [value]="chatChannel.id" [checked]="false">{{chatChannel.chatChannelName}}</mat-radio-button>
-        }
-        <br />
-        @if (i !== chatChannels.length - 1) {
-        <mat-divider></mat-divider>
-        }
-        }
-      </mat-radio-group>
-    </div>
-    <div class="col-offset-2 col-4">
-      <mat-card>
-        <mat-card-content id="chat-history" #chatHistory>
-          @for (chatMessage of chatMessages; track chatMessage; let i = $index){
-          <div class="flex-row">
-            <mat-icon>chat_bubble</mat-icon>
-            <div>
-              @if(chatMessage.isChatBot) {
-              <b>Chat Bot</b>
-              }
-            </div>
-            <div [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
-            <mat-divider></mat-divider>
-          </div>
+        <mat-radio-group (change)="handleChatChannelChanged($event)">
+          @for (chatChannel of chatChannels; track chatChannel; let i = $index) {
+          @if (i === 0) {
+          <mat-radio-button [value]="chatChannel.id" [checked]="true">{{chatChannel.chatChannelName}}</mat-radio-button>
+          } @else {
+          <mat-radio-button [value]="chatChannel.id"
+            [checked]="false">{{chatChannel.chatChannelName}}</mat-radio-button>
           }
-        </mat-card-content>
-        <mat-card-actions class="flex flex-wrap align-items-center justify-content-center">
-          <div class="flex-row w-full">
-            <div class="col w-full">
-              <form [formGroup]="inputForm" class="w-full">
-                <mat-form-field class="w-full">
-                  <textarea matInput id="textarea-chat" class="w-full" formControlName="input"
-                    (keydown.enter)="handleInputSend()"></textarea>
-                </mat-form-field>
-                <button mat-stroked-button (click)="handleInputSend()">Send</button>
-              </form>
-            </div>
-          </div>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+          <br />
+          @if (i !== chatChannels.length - 1) {
+          <mat-divider></mat-divider>
+          }
+          }
+        </mat-radio-group>
+      </mat-drawer>
+      <mat-drawer-content>
+        <div class="col-12">
+          <mat-card>
+            <mat-card-content id="chat-history" #chatHistory>
+              @for (chatMessage of chatMessages; track chatMessage; let i = $index){
+              <div class="flex-row">
+                <mat-icon>chat_bubble</mat-icon>
+                <div>
+                  @if(chatMessage.isChatBot) {
+                  <b>Chat Bot</b>
+                  }
+                </div>
+                <div [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
+                <mat-divider></mat-divider>
+              </div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-drawer-content>
+    </mat-drawer-container>
   </div>
   }
 </ion-content>

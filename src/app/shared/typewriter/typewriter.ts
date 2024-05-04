@@ -1,3 +1,5 @@
+import { IonTitle, IonToolbar, IonHeader, IonContent, IonFooter } from "@ionic/angular/standalone";
+import { Subject } from "rxjs";
 type QueueItem = () => Promise<void>;
 
 export class Typewriter {
@@ -6,7 +8,7 @@ export class Typewriter {
   loop: boolean;
   element: HTMLElement;
   deletingSpeed: number;
-  parentScroll: HTMLElement | null;
+  scrollNotificationSubject: Subject<void>;
 
   constructor(
     element: HTMLElement,
@@ -16,7 +18,7 @@ export class Typewriter {
     this.loop = loop;
     this.typingSpeed = typingSpeed;
     this.deletingSpeed = deletingSpeed;
-    this.parentScroll = parentScroll;
+    this.scrollNotificationSubject = new Subject<void>();
   }
 
   typeString(string: string) {
@@ -25,16 +27,13 @@ export class Typewriter {
         let i = 0;
         const interval = setInterval(() => {
           this.element.append(string[i]);
-          if (this.parentScroll) {
-            this.parentScroll.scrollTop = this.parentScroll.scrollHeight;
-          }
           i++;
+          if (i % 30 === 0) {
+            this.scrollNotificationSubject.next();
+          }
           if (i >= 255) {
             this.element.append(string.slice(i))
             clearInterval(interval);
-            if (this.parentScroll) {
-              this.parentScroll.scrollTop = this.parentScroll.scrollHeight;
-            }
             resolve();
           } else if (i >= string.length) {
             clearInterval(interval);
