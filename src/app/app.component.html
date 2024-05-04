@@ -1,15 +1,3 @@
 <ion-app>
-  <ion-content [fullscreen]="true">
-    <ion-router-outlet></ion-router-outlet>
-  </ion-content>
-  <ion-footer>
-    <ion-toolbar>
-        @if(routerEventService.currentUrl().includes('/chat/main')) {
-          <app-chat-main-footer></app-chat-main-footer>
-        }
-        @else if(routerEventService.currentUrl().includes('/auth/login') || routerEventService.currentUrl().includes('/auth/register')) {
-          <app-auth-footer></app-auth-footer>
-        }
-    </ion-toolbar>
-  </ion-footer>
+  <ion-router-outlet></ion-router-outlet>
 </ion-app>

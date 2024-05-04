@@ -46,7 +46,7 @@
                   <b>Chat Bot</b>
                   }
                 </div>
-                <div [attr.isChatTyped]="false" #chatMessage>{{this.animateChat(chatMessage, i)}}</div>
+                <div [attr.isChatTyped]="false" #chatMessage [innerHTML]="this.animateChat(chatMessage, i)"></div>
                 <mat-divider></mat-divider>
               </div>
               }
@@ -58,3 +58,8 @@
   </div>
   }
 </ion-content>
+<ion-footer [translucent]="true">
+  <ion-toolbar>
+    <app-chat-main-footer></app-chat-main-footer>
+  </ion-toolbar>
+</ion-footer>

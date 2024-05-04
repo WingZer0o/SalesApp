@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { IonApp, IonRouterOutlet, IonHeader, IonToolbar, IonTitle, IonFooter, IonContent } from '@ionic/angular/standalone';
+import { IonApp, IonContent, IonFooter, IonHeader, IonRouterOutlet, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { MaterialModule } from './modules/material.module';
 import { RouterEventService } from './services/router-event.service';
 import { ChatMainFooterComponent } from './shared/components/footers/chat-main-footer/chat-main-footer.component';
-import { AuthFooterComponent } from './shared/components/footers/auth-footer/auth-footer.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
   imports: [IonContent, IonFooter, IonTitle, IonToolbar, IonHeader, IonApp, IonRouterOutlet, 
-    ReactiveFormsModule, MaterialModule, ChatMainFooterComponent, AuthFooterComponent
+    ReactiveFormsModule, MaterialModule, ChatMainFooterComponent
   ],
 })
 export class AppComponent {

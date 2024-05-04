@@ -5,6 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
+import { Router } from "@angular/router";
 import {
   IonCol,
   IonContent,
@@ -16,6 +17,7 @@ import {
 } from "@ionic/angular/standalone";
 import { RegisterUserRequestDto } from "src/app/models/register/register-user-dto";
 import { MaterialModule } from "src/app/modules/material.module";
+import { AuthGuardService } from "src/app/services/http/auth-guard.service";
 import { RegisterHttpService } from "src/app/services/http/register-http.service";
 
 @Component({
@@ -42,9 +44,14 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private registerHttpService: RegisterHttpService,
+    private authGuardService: AuthGuardService,
+    private router: Router
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {// check if token exists in local storage. If it does, navigate to chat screen
+    if (this.authGuardService.isTokenPresent()) {
+      this.router.navigateByUrl("/chat");
+    }
     this.form = this.formBuilder.group({
       email: ["", [Validators.required]],
       password: ["", [Validators.required]],

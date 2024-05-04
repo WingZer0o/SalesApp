@@ -1,7 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IonTitle, IonToolbar, IonHeader, IonContent, IonFooter } from "@ionic/angular/standalone";
+import { MatRadioChange } from '@angular/material/radio';
+import { MatDrawer } from '@angular/material/sidenav';
+import { IonContent, IonFooter, IonHeader, IonTitle, IonToolbar, IonCol, IonRow } from "@ionic/angular/standalone";
+import { Subject, takeUntil } from 'rxjs';
 import { ChatChannelDto, ChatChannelListDto } from 'src/app/models/chat-main/chat-channel-list-dto';
 import { ChatChannelResponseDto } from 'src/app/models/chat-main/chat-channel-response-dto';
 import { ChatMessageDto } from 'src/app/models/chat-main/chat-message-dto';
@@ -9,20 +12,18 @@ import { MaterialModule } from 'src/app/modules/material.module';
 import { SharedModule } from 'src/app/modules/shared.module';
 import { AuthGuardService } from 'src/app/services/http/auth-guard.service';
 import { ChatHttpService } from 'src/app/services/http/chat-http.service';
+import { ChatMainFooterComponent } from 'src/app/shared/components/footers/chat-main-footer/chat-main-footer.component';
+import { ChatMainFooterService } from 'src/app/shared/components/footers/chat-main-footer/chat-main-footer.service';
 import { Typewriter } from 'src/app/shared/typewriter/typewriter';
 import { v4 as uuidv4 } from 'uuid';
 import { AddChatChannelComponent } from '../add-chat-channel/add-chat-channel.component';
-import { MatRadioChange } from '@angular/material/radio';
-import { MatDrawer } from '@angular/material/sidenav';
-import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
-import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-chat-main',
   templateUrl: './chat-main.component.html',
   styleUrls: ['./chat-main.component.scss'],
   standalone: true,
-  imports: [IonFooter, IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule]
+  imports: [IonRow, IonCol, IonFooter, IonContent, IonHeader, IonToolbar, IonTitle, MaterialModule, SharedModule, ReactiveFormsModule, ChatMainFooterComponent]
 })
 export class ChatMainComponent implements OnInit, OnDestroy {
   @ViewChild('content')
@@ -50,7 +51,8 @@ export class ChatMainComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private chatHttpService: ChatHttpService,
     private authGuardService: AuthGuardService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private chatMainFooterInputSubmitSubject: ChatMainFooterService
   ) { }
 
 
@@ -61,6 +63,9 @@ export class ChatMainComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     try {
       this.currentUserId = this.authGuardService.getDecodedToken()?.userId;
+      this.chatMainFooterInputSubmitSubject.chatMainFooterInputSubmitSubject.pipe(takeUntil(this.onDestroy$)).subscribe((message: string) => {
+        this.handleInputSend(message);
+      });
       const chatChannelListResponse: ChatChannelListDto = await this.chatHttpService.getChatChannelList();
       this.chatChannels.push(...chatChannelListResponse.chatChannels);
       const chatChannelResponse: ChatChannelResponseDto = await this.chatHttpService.getChatChannel(chatChannelListResponse.chatChannels[0].id);
