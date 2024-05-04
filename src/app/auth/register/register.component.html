@@ -4,38 +4,32 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" class="ion-padding">
-  <form [formGroup]="form">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="4">
-          <h1 class="fadeinleft animation-duration-1000 flex align-items-center justify-content-center"></h1>
-        </ion-col>
-        <ion-col class="text-center" size="4">
-          <h1 #titleWriter class="fadeinleft animation-duration-1000 flex align-items-center justify-content-center"></h1>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="4"></ion-col>
-        <ion-col class="text-center" size="4">
-          <mat-form-field class="example-full-width">
+  <div class="grid flex flex-wrap justify-content-center">
+    <div class="flex-row">
+      <div class="col-12 flex align-items-center justify-content-center">
+        <h1>Enter Your Information</h1>
+      </div>
+    </div>
+    <form [formGroup]="form" class="ion-padding">
+      <div class="flex-row">
+        <div class="col-12 flex align-items-center justify-content-center">
+          <mat-form-field appearance="fill">
             <input type="email" matInput placeholder="Email..." formControlName="email" />
           </mat-form-field>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="4"></ion-col>
-        <ion-col class="text-center" size="4">
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="col-12 flex align-items-center justify-content-center">
           <mat-form-field appearance="fill">
             <input matInput type="password" placeholder="Password..." formControlName="password" />
           </mat-form-field>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="4"></ion-col>
-        <ion-col class="text-center" size="3">
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="col-12 flex align-items-center justify-content-center">
           <button mat-stroked-button color="primary" (click)="handleRegisterUser()">Submit</button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </form>
+        </div>
+      </div>
+    </form>
+  </div>
 </ion-content>

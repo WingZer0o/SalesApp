@@ -13,9 +13,6 @@ import { Typewriter } from 'src/app/shared/typewriter/typewriter';
 })
 export class RegisterComponent implements OnInit {
 
-  @ViewChild('titleWriter', {static: true})
-  titleWriter!: ElementRef;
-
   public form!: FormGroup;
 
   constructor(private formBuilder: FormBuilder) { }
@@ -25,10 +22,6 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
-
-    const textWriter = new Typewriter(this.titleWriter.nativeElement, {loop: false});
-    textWriter.typeString("Register Your Account");
-    textWriter.start();
   }
 
   public handleRegisterUser(): void {
