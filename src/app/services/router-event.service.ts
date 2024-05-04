@@ -12,7 +12,6 @@ export class RouterEventService implements OnDestroy {
   constructor(private router: Router) {
     this.router.events.pipe(takeUntil(this.onDestroy)).subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        console.log('currentUrl', event.urlAfterRedirects);
         this.currentUrl.set(event.urlAfterRedirects);
       }
     });
