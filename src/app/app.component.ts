@@ -4,12 +4,15 @@ import { IonApp, IonRouterOutlet, IonHeader, IonToolbar, IonTitle, IonFooter, Io
 import { MaterialModule } from './modules/material.module';
 import { RouterEventService } from './services/router-event.service';
 import { ChatMainFooterComponent } from './shared/components/footers/chat-main-footer/chat-main-footer.component';
+import { AuthFooterComponent } from './shared/components/footers/auth-footer/auth-footer.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
-  imports: [IonContent, IonFooter, IonTitle, IonToolbar, IonHeader, IonApp, IonRouterOutlet, ReactiveFormsModule, MaterialModule, ChatMainFooterComponent],
+  imports: [IonContent, IonFooter, IonTitle, IonToolbar, IonHeader, IonApp, IonRouterOutlet, 
+    ReactiveFormsModule, MaterialModule, ChatMainFooterComponent, AuthFooterComponent
+  ],
 })
 export class AppComponent {
   

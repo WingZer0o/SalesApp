@@ -4,11 +4,12 @@
   </ion-content>
   <ion-footer>
     <ion-toolbar>
-      @switch (routerEventService.currentUrl()) {
-        @case('/chat/main') {
+        @if(routerEventService.currentUrl().includes('/chat/main')) {
           <app-chat-main-footer></app-chat-main-footer>
         }
-      }
+        @else if(routerEventService.currentUrl().includes('/auth/login') || routerEventService.currentUrl().includes('/auth/register')) {
+          <app-auth-footer></app-auth-footer>
+        }
     </ion-toolbar>
   </ion-footer>
 </ion-app>
