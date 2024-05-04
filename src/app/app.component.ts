@@ -1,30 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IonApp, IonRouterOutlet, IonHeader, IonToolbar, IonTitle, IonFooter, IonContent } from '@ionic/angular/standalone';
 import { MaterialModule } from './modules/material.module';
+import { RouterEventService } from './services/router-event.service';
+import { ChatMainFooterComponent } from './shared/components/footers/chat-main-footer/chat-main-footer.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
-  imports: [IonContent, IonFooter, IonTitle, IonToolbar, IonHeader, IonApp, IonRouterOutlet, ReactiveFormsModule, MaterialModule],
+  imports: [IonContent, IonFooter, IonTitle, IonToolbar, IonHeader, IonApp, IonRouterOutlet, ReactiveFormsModule, MaterialModule, ChatMainFooterComponent],
 })
-export class AppComponent implements OnInit {
-  public inputForm!: FormGroup;
+export class AppComponent {
   
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    public routerEventService: RouterEventService
+  ) {
     
-  }
-
-  ngOnInit(): void {
-    this.inputForm = this.formBuilder.group({
-      input: ['', Validators.required]
-    });
-  }
-
-  public async handleInputSend(): Promise<void> {
-    if (this.inputForm.valid) {
-      // TODO: implement service to call handleInputSend in chat-main-component.ts with this.inputForm.value.input
-    }
   }
 }

@@ -4,13 +4,11 @@
   </ion-content>
   <ion-footer>
     <ion-toolbar>
-      <form [formGroup]="inputForm" class="w-full">
-        <mat-form-field class="w-full">
-          <textarea matInput id="textarea-chat" class="w-full" formControlName="input"
-            (keydown.enter)="handleInputSend()"></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit" (click)="handleInputSend()">Send</button>
-      </form>
+      @switch (routerEventService.currentUrl()) {
+        @case('/chat/main') {
+          <app-chat-main-footer></app-chat-main-footer>
+        }
+      }
     </ion-toolbar>
   </ion-footer>
 </ion-app>

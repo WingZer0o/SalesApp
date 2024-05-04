@@ -1,0 +1,7 @@
+<form [formGroup]="inputForm" class="w-full">
+  <mat-form-field class="w-full">
+    <textarea matInput id="textarea-chat" class="w-full" formControlName="input"
+      (keydown.enter)="handleInputSend()"></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" (click)="handleInputSend()">Send</button>
+</form>
